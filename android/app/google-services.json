@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "766286708512",
+    "project_id": "wgriffey-practiceapp",
+    "storage_bucket": "wgriffey-practiceapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:766286708512:android:768dd1bfc9ea75d4fce145",
+        "android_client_info": {
+          "package_name": "com.gryffen.practiceapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBa5GlJ_kFREo2jiAvtsV3h4lFmkN2rDN8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
