@@ -31,71 +31,63 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Log In"),
-      ),
-      body: FutureBuilder(
-        future: Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform
-        ),
-        builder:(context, snapshot) {
-          switch (snapshot.connectionState){
-            case ConnectionState.done:
-              return Column(
-                children: [
-                  TextField(
-                    controller: _email,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(
-                      hintText: "Enter Email Here..."
-                    ),
-                  ),
-                  TextField(
-                    controller: _password,
-                    obscureText: true,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    decoration: const InputDecoration(
-                      hintText: "Enter Password Here...",
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () async {
-                      final email = _email.text;
-                      final password = _password.text;
-                      try{
-                        final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-                          email: email, 
-                          password: password
-                        );
-                        print(userCredential);
-                      }
-                      on FirebaseAuthException catch (e){
-                        print(e.code);
-                        switch (e.code){
-                          case 'user-not-found': {
-                            print('User Not Found'); 
-                            break;
-                          }
-                          case 'wrong-password': {
-                            print('Wrong Password'); 
-                            break;
-                          }
-                          default:
-                            print('Error with FirebaseAuth'); break;
-                        }
-                      }
-                    },
-                    child: const Text("Log In"),
-                  ),
-                ],
-              );
-            default:
-              return const Text('Loading...');
-          }
-        }
+      appBar: AppBar(title: const Text('Log In')),
+      body: Column(
+        children: [
+          TextField(
+            controller: _email,
+            enableSuggestions: false,
+            autocorrect: false,
+            keyboardType: TextInputType.emailAddress,
+            decoration: const InputDecoration(
+              hintText: "Enter Email Here..."
+            ),
+          ),
+          TextField(
+            controller: _password,
+            obscureText: true,
+            enableSuggestions: false,
+            autocorrect: false,
+            decoration: const InputDecoration(
+              hintText: "Enter Password Here...",
+            ),
+          ),
+          TextButton(
+            onPressed: () async {
+              final email = _email.text;
+              final password = _password.text;
+              try{
+                final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+                  email: email, 
+                  password: password
+                );
+                print(userCredential);
+              }
+              on FirebaseAuthException catch (e){
+                print(e.code);
+                switch (e.code){
+                  case 'user-not-found': {
+                    print('User Not Found'); 
+                    break;
+                  }
+                  case 'wrong-password': {
+                    print('Wrong Password'); 
+                    break;
+                  }
+                  default:
+                    print('Error with FirebaseAuth'); break;
+                }
+              }
+            },
+            child: const Text("Log In"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pushNamedAndRemoveUntil('/register/', (route) => false);
+            }, 
+            child: const Text('Not registered yet? Register here!')
+          ),
+        ],
       ),
     );
   }
