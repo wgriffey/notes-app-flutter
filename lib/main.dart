@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:practiceapp/views/login_view.dart';
 import 'firebase_options.dart';
+import 'views/login_view.dart';
 import 'views/register_view.dart';
 import 'views/verify_email_view.dart';
 import 'dart:developer' as devtools show log;
@@ -18,6 +18,7 @@ void main() {
       routes: {
         '/login/': (context) => const LoginView(),
         '/register/': (context) => const RegisterView(),
+        '/notes/': (context) => const NotesView(),
       }
     ),
   );
@@ -38,10 +39,10 @@ class HomePage extends StatelessWidget {
             final user = FirebaseAuth.instance.currentUser;
             if(user != null){
               if (user.emailVerified){
-               print('You are a verified user!');
+               devtools.log('You are a verified user!');
              }
              else{
-              print('You are not verified!');
+              devtools.log('You are not verified!');
               return const VerifyEmailView();
              }
             }
@@ -83,6 +84,7 @@ class _NotesViewState extends State<NotesView> {
                   final shouldLogOut = await showLogOutDialog(context); 
                   if(shouldLogOut){
                     await FirebaseAuth.instance.signOut();
+                    if (!context.mounted) return;
                     Navigator.of(context).pushNamedAndRemoveUntil('/login/', (route
                     ) => false);
                   }
@@ -99,8 +101,8 @@ class _NotesViewState extends State<NotesView> {
           )
         ],
       ),
-      body: Column(children: [
-        const Text('Notes'),
+      body: const Column(children: [
+        Text('Notes'),
       ]),
     );
   }
