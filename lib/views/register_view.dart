@@ -4,6 +4,8 @@ import 'dart:developer' as devtools show log;
 
 import 'package:practiceapp/constants/routes.dart';
 
+import '../utilities/show_error_dialog.dart';
+
 class RegisterView extends StatefulWidget {
   const RegisterView({super.key});
 
@@ -61,29 +63,42 @@ class _RegisterViewState extends State<RegisterView> {
                 await FirebaseAuth.instance.createUserWithEmailAndPassword(
                   email: email, 
                   password: password
-                );                
+                );
+
+                final user = FirebaseAuth.instance.currentUser;
+                await user?.sendEmailVerification();
+                
                 if (!context.mounted) return;
                 Navigator.of(context).pushNamedAndRemoveUntil(homeRoute, (route) => false);
               }
               on FirebaseAuthException catch (e){
                 switch(e.code){
                   case 'email-already-in-use': {
-                    devtools.log('Email is already in use');
+                    if (!context.mounted) return;
+                    await showErrorDialog(context, 'Email already in use');
                     break;
                   }
                   case 'weak-password': {
-                    devtools.log('Weak Password');
+                    if (!context.mounted) return;
+                    await showErrorDialog(context, 'Weak Password');
                     break;
                   }
                   case 'invalid-email': {
-                    devtools.log('Invalid Email');
+                    if (!context.mounted) return;
+                    await showErrorDialog(context, 'Invalid Email');
                     break;
                   }
                   default: {
-                    devtools.log('Error with FirebaseAuth');
+                    if (!context.mounted) return;
+                    await showErrorDialog(context, 'Error: ${e.code}');
                     break;
                   }
                 }
+              }
+              catch (e){
+                await showErrorDialog(
+                  context,
+                  'Unknown Error Occurred: ${e.toString()}');
               }
     
             },
