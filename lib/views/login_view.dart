@@ -1,9 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
 
-import 'package:practiceapp/constants/routes.dart';
-
+import '../constants/routes.dart';
+import '../services/auth/auth_exceptions.dart';
+import '../services/auth/auth_service.dart';
 import '../utilities/show_error_dialog.dart';
 
 class LoginView extends StatefulWidget {
@@ -18,19 +18,19 @@ class _LoginViewState extends State<LoginView> {
   late final TextEditingController _password;
 
   @override
-  void initState(){
+  void initState() {
     _email = TextEditingController();
     _password = TextEditingController();
     super.initState();
   }
 
   @override
-  void dispose(){
+  void dispose() {
     _email.dispose();
     _password.dispose();
     super.dispose();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,9 +42,7 @@ class _LoginViewState extends State<LoginView> {
             enableSuggestions: false,
             autocorrect: false,
             keyboardType: TextInputType.emailAddress,
-            decoration: const InputDecoration(
-              hintText: "Enter Email Here..."
-            ),
+            decoration: const InputDecoration(hintText: "Enter Email Here..."),
           ),
           TextField(
             controller: _password,
@@ -59,41 +57,34 @@ class _LoginViewState extends State<LoginView> {
             onPressed: () async {
               final email = _email.text;
               final password = _password.text;
-              try{
-                await FirebaseAuth.instance.signInWithEmailAndPassword(
-                  email: email, 
-                  password: password
+              try {
+                await AuthService.firebase().logIn(
+                  email: email,
+                  password: password,
                 );
                 if (!context.mounted) return;
-                Navigator.of(context).pushNamedAndRemoveUntil(homeRoute, (route) => false);
-              }
-              on FirebaseAuthException catch (e){
-                switch (e.code){
-                  case 'INVALID_LOGIN_CREDENTIALS':{
-                    if (!context.mounted) return;
-                    await showErrorDialog(context, 'Username or Password are incorrect');
-                    break;
-                  }
-                  default:
-                    if (!context.mounted) return;
-                    await showErrorDialog(context, 'Error: ${e.code}');
-                    break;
-                }
-              }
-              catch (e){
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil(homeRoute, (route) => false);
+              } on InvalidLoginCredentialsException {
                 await showErrorDialog(
                   context,
-                  'Unknown Error Occurred: ${e.toString()}');
+                  'Username or Password are incorrect',
+                );
+              } on GenericAuthException {
+                await showErrorDialog(
+                  context,
+                  'Authentication Error',
+                );
               }
             },
             child: const Text("Log In"),
           ),
           TextButton(
-            onPressed: () {
-              Navigator.of(context).pushNamedAndRemoveUntil(registerRoute, (route) => false);
-            }, 
-            child: const Text('Not registered yet? Register here!')
-          ),
+              onPressed: () {
+                Navigator.of(context)
+                    .pushNamedAndRemoveUntil(registerRoute, (route) => false);
+              },
+              child: const Text('Not registered yet? Register here!')),
         ],
       ),
     );
