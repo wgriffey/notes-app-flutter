@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:practiceapp/services/auth/auth_service.dart';
 import 'constants/routes.dart';
-import 'firebase_options.dart';
 import 'views/login_view.dart';
 import 'views/notes_view.dart';
 import 'views/register_view.dart';
