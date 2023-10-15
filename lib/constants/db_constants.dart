@@ -4,7 +4,7 @@ const userTable = 'user';
 const idColumn = 'id';
 const userIdColumn = 'user_id';
 const emailColumn = 'email';
-const notesTextColumn = 'notes_text';
+const notesTextColumn = 'note_text';
 const isSyncedWithCloudColumn = 'is_synced_with_cloud';
 
 const createUserTable = '''CREATE TABLE IF NOT EXISTS "user" (
@@ -13,7 +13,7 @@ const createUserTable = '''CREATE TABLE IF NOT EXISTS "user" (
   PRIMARY KEY("id" AUTOINCREMENT)
 )''';
 
-const createNotesTable = '''CREATE TABLE "notes" (
+const createNotesTable = '''CREATE TABLE IF NOT EXISTS "notes" (
   "id"	INTEGER NOT NULL,
   "user_id"	INTEGER NOT NULL,
   "note_text"	TEXT,
