@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:practiceapp/services/crud/database_models.dart';
 import 'package:practiceapp/services/crud/notes_service.dart';
+import 'package:practiceapp/utilities/dialogs/logout_dialog.dart';
+import 'package:practiceapp/views/notes/notes_list_view.dart';
 
 import '../../services/auth/auth_service.dart';
 import '../../constants/routes.dart';
@@ -24,20 +27,16 @@ class _NotesViewState extends State<NotesView> {
   }
 
   @override
-  void dispose() {
-    _notesService.close();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Notes'),
         actions: [
-          IconButton(onPressed: () {
-            Navigator.of(context).pushNamed(newNotesRoute);
-          }, icon: const Icon(Icons.add)),
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(newNotesRoute);
+              },
+              icon: const Icon(Icons.add)),
           PopupMenuButton<MenuAction>(
             onSelected: (value) async {
               switch (value) {
@@ -71,7 +70,16 @@ class _NotesViewState extends State<NotesView> {
                   switch (snapshot.connectionState) {
                     case ConnectionState.waiting:
                     case ConnectionState.active:
-                      return const Text('Waiting for all notes...');
+                      if (snapshot.hasData) {
+                        final allNotes = snapshot.data as List<DatabaseNote>;
+                        return NotesListView(
+                            notes: allNotes,
+                            onDeleteNote: (note) async {
+                              await _notesService.deleteNote(id: note.id);
+                            });
+                      } else {
+                        return const CircularProgressIndicator();
+                      }
                     default:
                       return const CircularProgressIndicator();
                   }
