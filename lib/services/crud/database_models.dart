@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import '../../constants/db_constants.dart';
+import '../../constants/crud/db_constants.dart';
 
 @immutable
 class DatabaseUser {

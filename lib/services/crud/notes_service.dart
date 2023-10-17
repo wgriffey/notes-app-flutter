@@ -4,7 +4,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart'
     show MissingPlatformDirectoryException, getApplicationDocumentsDirectory;
 import 'package:path/path.dart' show join;
-import '../../constants/db_constants.dart';
+import '../../constants/crud/db_constants.dart';
 import 'crud_exceptions.dart';
 import 'database_models.dart';
 

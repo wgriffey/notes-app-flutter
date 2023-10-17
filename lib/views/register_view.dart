@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:practiceapp/utilities/dialogs/error_dialog.dart';
-import 'dart:developer' as devtools show log;
-
 import '../constants/routes.dart';
 import '../services/auth/auth_exceptions.dart';
 import '../services/auth/auth_service.dart';
