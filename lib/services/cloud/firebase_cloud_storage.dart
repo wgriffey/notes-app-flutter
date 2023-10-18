@@ -6,11 +6,17 @@ import 'package:practiceapp/services/cloud/cloud_storage_exceptions.dart';
 class FirebaseCloudStorage {
   final notes = FirebaseFirestore.instance.collection('notes');
 
-  void createNewNote({required String ownerUserId}) async {
-    await notes.add({
+  Future<CloudNote> createNewNote({required String ownerUserId}) async {
+    final document = await notes.add({
       ownerUserIdFieldName: ownerUserId,
-      noteTextFieldName: 'Note',
+      noteTextFieldName: '',
     });
+    final fetchedNote = await document.get();
+    return CloudNote(
+      documentId: fetchedNote.id,
+      ownerUserId: ownerUserId,
+      noteText: '',
+    );
   }
 
   Future<Iterable<CloudNote>> getNotes({required String ownerUserId}) async {
@@ -21,12 +27,8 @@ class FirebaseCloudStorage {
             isEqualTo: ownerUserId,
           )
           .get()
-          .then((value) => value.docs.map((doc) {
-                return CloudNote(
-                    documentId: doc.id,
-                    ownerUserId: ownerUserId,
-                    noteText: doc.data()[noteTextFieldName] as String);
-              }));
+          .then(
+              (value) => value.docs.map((doc) => CloudNote.fromSnapshot(doc)));
     } catch (e) {
       throw CouldNotGetAllNotesException();
     }
@@ -48,8 +50,8 @@ class FirebaseCloudStorage {
     }
   }
 
-  Future<void> deleteNote({required String documentId}) async{
-    try{
+  Future<void> deleteNote({required String documentId}) async {
+    try {
       await notes.doc(documentId).delete();
     } catch (e) {
       throw CouldNotDeleteNoteException();

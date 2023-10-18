@@ -1,13 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:practiceapp/constants/cloud/cloud_storage_constants.dart';
 import 'package:flutter/foundation.dart';
+import 'package:practiceapp/constants/cloud/cloud_storage_constants.dart';
 
+@immutable
 class CloudNote {
   final String documentId;
   final String ownerUserId;
   final String noteText;
 
-  CloudNote(
+  const CloudNote(
       {required this.documentId,
       required this.ownerUserId,
       required this.noteText});
