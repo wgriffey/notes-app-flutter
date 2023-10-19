@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:practiceapp/services/auth/bloc/auth_bloc.dart';
+import 'package:practiceapp/services/auth/bloc/auth_event.dart';
 import 'package:practiceapp/utilities/dialogs/error_dialog.dart';
 import '../constants/routes.dart';
 import '../services/auth/auth_exceptions.dart';
-import '../services/auth/auth_service.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -56,13 +58,12 @@ class _LoginViewState extends State<LoginView> {
               final email = _email.text;
               final password = _password.text;
               try {
-                await AuthService.firebase().logIn(
-                  email: email,
-                  password: password,
-                );
-                if (!context.mounted) return;
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil(homeRoute, (route) => false);
+                context.read<AuthBloc>().add(
+                      AuthEventLogIn(
+                        email,
+                        password,
+                      ),
+                    );
               } on InvalidLoginCredentialsException {
                 await showErrorDialog(
                   context,
