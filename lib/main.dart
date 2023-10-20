@@ -17,16 +17,12 @@ void main() {
     MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
-          primarySwatch: Colors.red,
+          colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.red)
         ),
         home: BlocProvider<AuthBloc>(
             create: (context) => AuthBloc(FirebaseAuthProvider()),
             child: const HomePage()),
         routes: {
-          homeRoute: (context) => const HomePage(),
-          loginRoute: (context) => const LoginView(),
-          registerRoute: (context) => const RegisterView(),
-          notesRoute: (context) => const NotesView(),
           createOrUpdateNoteRoute: (context) => const CreateUpdateNoteView(),
         }),
   );
@@ -46,6 +42,8 @@ class HomePage extends StatelessWidget {
           return const VerifyEmailView();
         } else if (state is AuthStateLoggedOut) {
           return const LoginView();
+        }else if (state is AuthStateRegistering){
+          return const RegisterView();
         } else {
           return const Scaffold(
             body: CircularProgressIndicator(),
